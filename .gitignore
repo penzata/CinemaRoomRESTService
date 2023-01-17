@@ -1,0 +1,23 @@
+# Project exclude paths
+/.gradle/
+/Cinema Room REST Service/task/build/
+/Cinema Room REST Service/task/out/production/classes/
+/Cinema Room REST Service/task/out/test/classes/
+/.idea/
+/build.gradle
+/course-info.yaml
+/course-remote-info.yaml
+/gradlew
+/gradlew.bat
+/settings.gradle
+/gradle/
+/Cinema Room REST Service/A change of plans/
+/Cinema Room REST Service/Take your seat/
+/Cinema Room REST Service/The show begins/
+/Cinema Room REST Service/The statistics/
+/Cinema Room REST Service/task/out/
+/Cinema Room REST Service/task/build/
+/Cinema Room REST Service/task/src/generated/
+/Cinema Room REST Service/task/out/production/
+/Cinema Room REST Service/task/out/production/resources/
+/Cinema Room REST Service/lesson-info.yaml
