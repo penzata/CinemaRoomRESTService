@@ -1,0 +1,1 @@
+# Simple Spring REST service that manages a small movie theatre.
