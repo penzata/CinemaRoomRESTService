@@ -106,9 +106,7 @@ public class SeatRepository {
     }
 
     public boolean isSeatPresent(Seat seat) {
-        return seat.getRowPosition() > 0 &&
-                seat.getRowPosition() <= cinemaProperties.getTotalRows() &&
-                seat.getColumnPosition() > 0 &&
+        return seat.getRowPosition() <= cinemaProperties.getTotalRows() &&
                 seat.getColumnPosition() <= cinemaProperties.getTotalColumns();
     }
 

@@ -2,9 +2,10 @@ package cinema.rest.dto;
 
 import cinema.domain.model.Ticket;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-public record TicketDTO(@JsonProperty("token")
-                        String token,
+@JsonPropertyOrder({"token", "seatDTO"})
+public record TicketDTO(String token,
                         @JsonProperty("ticket")
                         SeatDTO seatDTO) {
 

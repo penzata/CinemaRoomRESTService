@@ -1,21 +1,16 @@
 package cinema.domain.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Stats {
     int currentIncome;
     int numberOfAvailableSeats;
     int numberOfPurchasedTickets;
-
-    public Stats(int currentIncome, int numberOfAvailableSeats, int numberOfPurchasedTickets) {
-        this.currentIncome = currentIncome;
-        this.numberOfAvailableSeats = numberOfAvailableSeats;
-        this.numberOfPurchasedTickets = numberOfPurchasedTickets;
-    }
-
-    public Stats() {
-    }
 }

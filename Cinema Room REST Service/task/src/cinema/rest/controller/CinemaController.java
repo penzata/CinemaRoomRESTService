@@ -34,7 +34,7 @@ public class CinemaController {
     }
 
     @PostMapping("/stats")
-    public StatsDTO getStats(@RequestParam(required = false) String password) {
+    public StatsDTO getStats(@RequestParam(required = false, name = "password") String password) {
         Stats stats = cinemaService.calculateStats(password);
         return StatsDTO.fromModel(stats);
     }
