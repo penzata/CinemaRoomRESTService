@@ -11,15 +11,11 @@ import cinema.exception.AlreadyPurchasedTicketException;
 import cinema.exception.ExpiredTokenException;
 import cinema.exception.SeatOutOfBoundsException;
 import cinema.exception.WrongPasswordException;
+import cinema.exceptionhandler.ExceptionConstants;
 import cinema.persistence.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static cinema.exceptionhandler.ExceptionMessage.ALREADY_PURCHASE_TICKET;
-import static cinema.exceptionhandler.ExceptionMessage.EXPIRED_TOKEN;
-import static cinema.exceptionhandler.ExceptionMessage.SEAT_OUT_OF_BOUNDS;
-import static cinema.exceptionhandler.ExceptionMessage.WRONG_PASSWORD;
 
 @Service
 public class CinemaServiceImpl implements CinemaService {
@@ -58,27 +54,27 @@ public class CinemaServiceImpl implements CinemaService {
     @Override
     public Ticket returnTicket(TokenInfo tokenInfo) {
         return seatRepository.delete(tokenInfo)
-                .orElseThrow(() -> new ExpiredTokenException(EXPIRED_TOKEN, tokenInfo));
+                .orElseThrow(() -> new ExpiredTokenException(ExceptionConstants.EXPIRED_TOKEN, tokenInfo));
     }
 
     @Override
     public Stats calculateStats(String password) {
         String managerPass = "super_secret";
         if (!managerPass.equals(password)) {
-            throw new WrongPasswordException(WRONG_PASSWORD, password);
+            throw new WrongPasswordException(ExceptionConstants.WRONG_PASSWORD, password);
         }
         return seatRepository.calculate()
-                .orElseThrow(() -> new WrongPasswordException(WRONG_PASSWORD, password));
+                .orElseThrow(() -> new WrongPasswordException(ExceptionConstants.WRONG_PASSWORD, password));
     }
 
     @Override
     public Ticket purchaseTicket(Seat seat) {
         if (!seatRepository.isSeatPresent(seat)) {
-            throw new SeatOutOfBoundsException(SEAT_OUT_OF_BOUNDS, seat);
+            throw new SeatOutOfBoundsException(ExceptionConstants.SEAT_OUT_OF_BOUNDS, seat);
         }
         addTicketPrice(seat);
         return seatRepository.save(seat)
-                .orElseThrow(() -> new AlreadyPurchasedTicketException(ALREADY_PURCHASE_TICKET, seat));
+                .orElseThrow(() -> new AlreadyPurchasedTicketException(ExceptionConstants.ALREADY_PURCHASE_TICKET, seat));
     }
 
 }

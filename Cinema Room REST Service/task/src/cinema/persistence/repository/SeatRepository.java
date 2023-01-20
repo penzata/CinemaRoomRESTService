@@ -7,6 +7,7 @@ import cinema.domain.model.Ticket;
 import cinema.domain.model.TokenInfo;
 import cinema.exception.ExpiredTokenException;
 import cinema.exception.SeatOutOfBoundsException;
+import cinema.exceptionhandler.ExceptionConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -15,10 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
-import static cinema.exceptionhandler.ExceptionMessage.EXPIRED_TOKEN;
-import static cinema.exceptionhandler.ExceptionMessage.SEAT_OUT_OF_BOUNDS;
-
 
 @Slf4j
 @Repository
@@ -40,7 +37,7 @@ public class SeatRepository {
                     .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
                             s.getColumnPosition() == seat.getColumnPosition())
                     .findFirst()
-                    .orElseThrow(() -> new SeatOutOfBoundsException(SEAT_OUT_OF_BOUNDS, seat));
+                    .orElseThrow(() -> new SeatOutOfBoundsException(ExceptionConstants.SEAT_OUT_OF_BOUNDS, seat));
             Ticket ticket = new Ticket(String.valueOf(UUID.randomUUID()), seat);
             seats.put(seatInRoom, ticket);
             changeSeatToNotAvailable(seat);
@@ -96,18 +93,18 @@ public class SeatRepository {
                 .filter(t -> tokenInfo.getUniqueIdentifier().equals(t.getToken()))
                 .findFirst();
         Seat seatFromTicket = ticket
-                .orElseThrow(() -> new ExpiredTokenException(EXPIRED_TOKEN, tokenInfo))
+                .orElseThrow(() -> new ExpiredTokenException(ExceptionConstants.EXPIRED_TOKEN, tokenInfo))
                 .getSeat();
 
         Seat seatInRoom = seats.keySet().stream()
                 .filter(s -> s.getRowPosition() == seatFromTicket.getRowPosition() &&
                         s.getColumnPosition() == seatFromTicket.getColumnPosition())
                 .findFirst()
-                .orElseThrow(() -> new SeatOutOfBoundsException(SEAT_OUT_OF_BOUNDS, seatFromTicket));
+                .orElseThrow(() -> new SeatOutOfBoundsException(ExceptionConstants.SEAT_OUT_OF_BOUNDS, seatFromTicket));
 
         seatInRoom.setAvailable(true);
         seats.replace(seatInRoom, null);
-        ticket.orElseThrow(() -> new ExpiredTokenException(EXPIRED_TOKEN, tokenInfo)).setToken(null);
+        ticket.orElseThrow(() -> new ExpiredTokenException(ExceptionConstants.EXPIRED_TOKEN, tokenInfo)).setToken(null);
         return ticket;
     }
 
