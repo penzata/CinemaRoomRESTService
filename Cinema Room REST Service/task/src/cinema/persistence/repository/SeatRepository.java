@@ -10,7 +10,15 @@ import cinema.exception.SeatOutOfBoundsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
+import static cinema.exceptionhandler.ExceptionMessage.EXPIRED_TOKEN;
+import static cinema.exceptionhandler.ExceptionMessage.SEAT_OUT_OF_BOUNDS;
+
 
 @Slf4j
 @Repository
@@ -27,36 +35,34 @@ public class SeatRepository {
     }
 
     public Optional<Ticket> save(Seat seat) {
-        boolean seatAvailable = isSeatAvailable(seat);
-        Seat seatInRoom = seats.keySet().stream()
-                .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
-                        s.getColumnPosition() == seat.getColumnPosition())
-                .findFirst()
-                .orElseThrow(() -> new SeatOutOfBoundsException(seat));
-
-        if (seatAvailable) {
+        if (isSeatAvailable(seat)) {
+            Seat seatInRoom = seats.keySet().stream()
+                    .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
+                            s.getColumnPosition() == seat.getColumnPosition())
+                    .findFirst()
+                    .orElseThrow(() -> new SeatOutOfBoundsException(SEAT_OUT_OF_BOUNDS, seat));
             Ticket ticket = new Ticket(String.valueOf(UUID.randomUUID()), seat);
             seats.put(seatInRoom, ticket);
+            changeSeatToNotAvailable(seat);
             return Optional.of(ticket);
         }
         return Optional.empty();
     }
 
     private boolean isSeatAvailable(Seat seat) {
-        boolean availability = seats.keySet().stream()
+        return seats.keySet().stream()
                 .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
                         s.getColumnPosition() == seat.getColumnPosition())
                 .anyMatch(Seat::isAvailable);
+    }
 
-        if (availability) {
-            seats.keySet().stream()
-                    .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
-                            s.getColumnPosition() == seat.getColumnPosition())
-                    .findFirst()
-                    .ifPresent(s -> s.setAvailable(false));
-            seat.setAvailable(false);
-        }
-        return availability;
+    private void changeSeatToNotAvailable(Seat seat) {
+        seats.keySet().stream()
+                .filter(s -> s.getRowPosition() == seat.getRowPosition() &&
+                        s.getColumnPosition() == seat.getColumnPosition())
+                .findFirst()
+                .ifPresent(s -> s.setAvailable(false));
+        seat.setAvailable(false);
     }
 
     public Optional<Stats> calculate() {
@@ -90,23 +96,25 @@ public class SeatRepository {
                 .filter(t -> tokenInfo.getUniqueIdentifier().equals(t.getToken()))
                 .findFirst();
         Seat seatFromTicket = ticket
-                .orElseThrow(() -> new ExpiredTokenException(tokenInfo))
+                .orElseThrow(() -> new ExpiredTokenException(EXPIRED_TOKEN, tokenInfo))
                 .getSeat();
 
         Seat seatInRoom = seats.keySet().stream()
                 .filter(s -> s.getRowPosition() == seatFromTicket.getRowPosition() &&
                         s.getColumnPosition() == seatFromTicket.getColumnPosition())
                 .findFirst()
-                .orElseThrow(() -> new SeatOutOfBoundsException(seatFromTicket));
+                .orElseThrow(() -> new SeatOutOfBoundsException(SEAT_OUT_OF_BOUNDS, seatFromTicket));
 
         seatInRoom.setAvailable(true);
         seats.replace(seatInRoom, null);
-        ticket.orElseThrow(() -> new ExpiredTokenException(tokenInfo)).setToken(null);
+        ticket.orElseThrow(() -> new ExpiredTokenException(EXPIRED_TOKEN, tokenInfo)).setToken(null);
         return ticket;
     }
 
     public boolean isSeatPresent(Seat seat) {
-        return seat.getRowPosition() <= cinemaProperties.getTotalRows() &&
+        return seat.getRowPosition() > 0 &&
+                seat.getRowPosition() <= cinemaProperties.getTotalRows() &&
+                seat.getColumnPosition() > 0 &&
                 seat.getColumnPosition() <= cinemaProperties.getTotalColumns();
     }
 

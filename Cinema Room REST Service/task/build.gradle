@@ -29,5 +29,5 @@ dependencies {
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.5'
 }

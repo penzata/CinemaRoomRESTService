@@ -1,4 +1,4 @@
-package cinema.rest.controller;
+package cinema.exceptionhandler;
 
 import cinema.exception.BusinessException;
 import cinema.exception.WrongPasswordException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerExceptionHandler {
+public class GlobalExceptionHandlerAdvice {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -37,4 +37,5 @@ public class ControllerExceptionHandler {
         return ResponseEntity.internalServerError()
                 .body(new CustomMessageDTO(ex.getMessage()));
     }
+
 }

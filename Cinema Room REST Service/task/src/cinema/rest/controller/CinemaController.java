@@ -4,8 +4,17 @@ import cinema.domain.model.CinemaRoom;
 import cinema.domain.model.Stats;
 import cinema.domain.model.Ticket;
 import cinema.domain.service.CinemaService;
-import cinema.rest.dto.*;
-import org.springframework.web.bind.annotation.*;
+import cinema.rest.dto.CinemaRoomDTO;
+import cinema.rest.dto.ReturnedTicketDTO;
+import cinema.rest.dto.SeatDTO;
+import cinema.rest.dto.StatsDTO;
+import cinema.rest.dto.TicketDTO;
+import cinema.rest.dto.TokenDTO;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CinemaController {
